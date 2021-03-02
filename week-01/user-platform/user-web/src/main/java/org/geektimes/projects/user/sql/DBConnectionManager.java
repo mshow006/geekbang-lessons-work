@@ -21,6 +21,7 @@ public class DBConnectionManager {
             Driver driver = DriverManager.getDriver("jdbc:derby:/db/user-platform;create=true");
             Connection connection = driver.connect("jdbc:derby:/db/user-platform;create=true", new Properties());
             this.connection = connection;
+            createUsersTableAndInsertUser();
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
@@ -44,6 +45,15 @@ public class DBConnectionManager {
         }
     }
 
+    private void createUsersTableAndInsertUser() throws SQLException {
+        Statement statement = this.connection.createStatement();
+        System.out.println(DROP_USERS_TABLE_DDL_SQL);
+        System.out.printf("result : %s\n", statement.execute(DROP_USERS_TABLE_DDL_SQL));
+        System.out.println(CREATE_USERS_TABLE_DDL_SQL);
+        System.out.printf("result : %s\n", statement.execute(CREATE_USERS_TABLE_DDL_SQL));
+//        statement.executeUpdate(INSERT_USER_DML_SQL);
+    }
+
     public static final String DROP_USERS_TABLE_DDL_SQL = "DROP TABLE users";
 
     public static final String CREATE_USERS_TABLE_DDL_SQL = "CREATE TABLE users(" +
@@ -62,7 +72,7 @@ public class DBConnectionManager {
             "('E','******','e@gmail.com','5')";
 
 
-    public static void main(String[] args) throws Exception {
+    private void initDatabase() throws Exception {
 //        通过 ClassLoader 加载 java.sql.DriverManager -> static 模块 {}
 //        DriverManager.setLogWriter(new PrintWriter(System.out));
 //

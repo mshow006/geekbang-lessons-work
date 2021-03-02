@@ -54,6 +54,7 @@ public class RegisterController implements PageController {
             return user;
         }, request);
 
+        System.out.println(userModel);
         boolean success = userService.register(userModel);
 
         User user = userService.queryUserByNameAndPassword(userModel.getName(), userModel.getPassword());
