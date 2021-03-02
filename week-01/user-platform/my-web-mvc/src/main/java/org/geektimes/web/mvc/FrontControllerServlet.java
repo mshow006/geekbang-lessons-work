@@ -130,17 +130,19 @@ public class FrontControllerServlet extends HttpServlet {
                     String httpMethod = request.getMethod();
 
                     if (!handlerMethodInfo.getSupportedHttpMethods().contains(httpMethod)) {
-                        // HTTP 方法不支持
+                        // HTTP 方法不支持 405
                         response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
                         return;
                     }
 
                     if (controller instanceof PageController) {
                         PageController pageController = PageController.class.cast(controller);
-                        // String viewPath = pageController.execute(request, response);
 
+                        // 更改 viewPath 的获取方式
+                        // String viewPath = pageController.execute(request, response);
                         Method handlerMethod = handlerMethodInfo.getHandlerMethod();
                         String viewPath = handlerMethod.invoke(pageController, request, response).toString();
+
                         // 页面请求 forward
                         // request -> RequestDispatcher forward
                         // RequestDispatcher requestDispatcher = request.getRequestDispatcher(viewPath);

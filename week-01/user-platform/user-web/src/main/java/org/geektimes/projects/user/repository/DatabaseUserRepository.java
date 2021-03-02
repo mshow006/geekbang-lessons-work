@@ -188,7 +188,6 @@ public class DatabaseUserRepository implements UserRepository {
         DatabaseUserRepository repository = new DatabaseUserRepository(new DBConnectionManager());
         // Connection connection = repository.getConnection();
         // PreparedStatement preparedStatement = connection.prepareStatement(INSERT_USER_DML_SQL);
-        // String a = "ASd";
         // Object[] argss = {"sdf", "asdfa", "xgsd", "fgsd"};
         // for (int i = 0; i < argss.length; i++) {
         //     Class argType = argss[i].getClass();
@@ -202,7 +201,6 @@ public class DatabaseUserRepository implements UserRepository {
 
         Collection<User> users = repository.getAll();
         System.out.println(users);
-
     }
 
     protected Boolean executeUpdate(String sql, Consumer<Throwable> exceptionHandler, Object... args) {

@@ -1,19 +1,15 @@
 package org.geektimes.projects.user.sql;
 
-import org.apache.commons.lang.StringUtils;
 import org.geektimes.projects.user.domain.User;
 
 import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
-import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-
-import static org.apache.commons.lang.StringUtils.substringAfter;
 
 public class DBConnectionManager {
 

@@ -7,6 +7,7 @@
 <body>
 <div class="container-lg">
     <!-- Content here -->
+    <h2>注册账户</h2>
     <form action="/register/submit" method="post">
         <div class="mb-3">
             <label for="email" class="form-label">Email address</label>
