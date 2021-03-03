@@ -24,10 +24,10 @@ java -jar user-web/target/user-web-v1-SNAPSHOT-war-exec.jar
 localhost:8080/register
 ```
 
-- Apache Derby URL
+- Apache Derby URL （项目启动时，自动在 `geekbang-lessons-work/week-01/user-platform` 目录下创建 `db/user-platform`）
 
 ```
-jdbc:derby:/db/user-platform;create=true
+jdbc:derby:db/user-platform;create=true
 ```
 
 - RegisterController

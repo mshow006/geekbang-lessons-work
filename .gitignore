@@ -46,3 +46,6 @@ compiler/.gradle/*
 
 # Tomcat
 .extract
+
+# Apache Derby
+db/

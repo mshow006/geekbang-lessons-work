@@ -18,8 +18,8 @@ public class DBConnectionManager {
     public DBConnectionManager() {
         try {
             Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
-            Driver driver = DriverManager.getDriver("jdbc:derby:/db/user-platform;create=true");
-            Connection connection = driver.connect("jdbc:derby:/db/user-platform;create=true", new Properties());
+            Driver driver = DriverManager.getDriver("jdbc:derby:db/user-platform;create=true");
+            Connection connection = driver.connect("jdbc:derby:db/user-platform;create=true", new Properties());
             this.connection = connection;
             createUsersTableAndInsertUser();
         } catch (ClassNotFoundException | SQLException e) {
@@ -46,9 +46,18 @@ public class DBConnectionManager {
     }
 
     private void createUsersTableAndInsertUser() throws SQLException {
-        Statement statement = this.connection.createStatement();
-        System.out.println(DROP_USERS_TABLE_DDL_SQL);
-        System.out.printf("result : %s\n", statement.execute(DROP_USERS_TABLE_DDL_SQL));
+        String databaseURL = "jdbc:derby:db/user-platform;create=true";
+        Connection connection = DriverManager.getConnection(databaseURL);
+        Statement statement = connection.createStatement();
+
+        DatabaseMetaData databaseMetadata = connection.getMetaData();
+        ResultSet resultSet = databaseMetadata.getTables(null, null, "USERS", null);
+        
+        if (resultSet.next()) {
+            System.out.println(DROP_USERS_TABLE_DDL_SQL);
+            System.out.printf("result : %s\n", statement.execute(DROP_USERS_TABLE_DDL_SQL));
+        }
+
         System.out.println(CREATE_USERS_TABLE_DDL_SQL);
         System.out.printf("result : %s\n", statement.execute(CREATE_USERS_TABLE_DDL_SQL));
 //        statement.executeUpdate(INSERT_USER_DML_SQL);
@@ -77,10 +86,10 @@ public class DBConnectionManager {
 //        DriverManager.setLogWriter(new PrintWriter(System.out));
 //
 //        Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
-//        Driver driver = DriverManager.getDriver("jdbc:derby:/db/user-platform;create=true");
-//        Connection connection = driver.connect("jdbc:derby:/db/user-platform;create=true", new Properties());
+//        Driver driver = DriverManager.getDriver("jdbc:derby:db/user-platform;create=true");
+//        Connection connection = driver.connect("jdbc:derby:db/user-platform;create=true", new Properties());
 
-        String databaseURL = "jdbc:derby:/db/user-platform;create=true";
+        String databaseURL = "jdbc:derby:db/user-platform;create=true";
         Connection connection = DriverManager.getConnection(databaseURL);
 
         Statement statement = connection.createStatement();
