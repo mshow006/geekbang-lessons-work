@@ -14,18 +14,22 @@ import static org.geektimes.context.ComponentContext.CONTEXT_NAME;
  */
 public class ComponentContextInitializerListener implements ServletContextListener {
 
+    private ServletContext servletContext;
+
+    private ComponentContext context;
+
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        ServletContext servletContext = sce.getServletContext();
-        ComponentContext context = new ComponentContext();
+        this.servletContext = sce.getServletContext();
+        this.context = new ComponentContext();
+        ComponentContext.setServletContext(servletContext);
+        servletContext.setAttribute(CONTEXT_NAME, context);
         context.init(servletContext);
     }
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-//        ComponentContext context = ComponentContext.getInstance();
-//        context.destroy();
-        ComponentContext.getInstance().destroy();
+        context.destroy();
     }
 
 }

@@ -2,14 +2,12 @@ package org.geektimes.context;
 
 import org.geektimes.function.ThrowableAction;
 import org.geektimes.function.ThrowableFunction;
-import org.geektimes.web.mvc.controller.Controller;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 import javax.naming.*;
 import javax.servlet.ServletContext;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.logging.Logger;
@@ -30,13 +28,6 @@ public class ComponentContext {
     // 假设一个 Tomcat JVM 进程，三个 Web Apps，会不会相互冲突？（不会冲突）
     // static 字段是 JVM 缓存吗？（是 ClassLoader 缓存）
 
-//    private static ApplicationContext applicationContext;
-
-//    public void setApplicationContext(ApplicationContext applicationContext){
-//        ComponentContext.applicationContext = applicationContext;
-//        WebApplicationContextUtils.getRootWebApplicationContext()
-//    }
-
     public static void setServletContext(ServletContext servletContext) {
         ComponentContext.servletContext = servletContext;
     }
@@ -46,8 +37,6 @@ public class ComponentContext {
     private ClassLoader classLoader;
 
     private Map<String, Object> componentsMap = new LinkedHashMap<>();
-
-    private List<Controller> controllers = new ArrayList<>();
 
     /**
      * 获取 ComponentContext
@@ -65,11 +54,8 @@ public class ComponentContext {
     }
 
     public void init(ServletContext servletContext) throws RuntimeException {
-        // ComponentContext.servletContext = servletContext;
-        servletContext.setAttribute(CONTEXT_NAME, this);
-        setServletContext(servletContext);
         // 获取当前 ServletContext（WebApp）ClassLoader
-        // this.classLoader = servletContext.getClassLoader();
+        this.classLoader = servletContext.getClassLoader();
         initEnvContext();
         instantiateComponents();
         initializeComponents();
@@ -79,49 +65,10 @@ public class ComponentContext {
      * 实例化组件
      */
     protected void instantiateComponents() {
-        // // 遍历获取所有的组件名称
-        // List<String> componentNames = listAllComponentNames();
-        // // 通过依赖查找，实例化对象（ Tomcat BeanFactory setter 方法的执行，仅支持简单类型）
-        // componentNames.forEach(name -> componentsMap.put(name, lookupComponent(name)));
-
-        //从jndi中查找所有JavaBean的名称
-        List<String> componentNames = listComponentName("/");
-        //通过依赖查找初始化JavaBean
-        componentNames.forEach(componentName -> {
-            Object component = lookupComponent(componentName);
-            componentsMap.put(componentName, component);
-            if (component instanceof Controller) {
-                //如果component实现了Controller接口，则放入controllers集合中
-                controllers.add((Controller) component);
-            }
-        });
-    }
-
-    private List<String> listComponentName(String name) {
-        try {
-            List<String> componentsName = null;
-            NamingEnumeration<NameClassPair> list = envContext.list(name);
-
-            if (!list.hasMoreElements()) {
-                return Collections.EMPTY_LIST;
-            }
-
-            componentsName = new ArrayList<>();
-            while (list.hasMoreElements()) {
-                NameClassPair next = list.nextElement();
-                String className = next.getClassName();
-                Class<?> targetClass = getClass().getClassLoader().loadClass(className);
-                if (Context.class.isAssignableFrom(targetClass)) {
-                    componentsName.addAll(listComponentName(next.getName()));
-                } else {
-                    String fullName = name.startsWith("/") ? next.getName() : name + "/" + next.getName();
-                    componentsName.add(fullName);
-                }
-            }
-            return componentsName;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        // 遍历获取所有的组件名称
+        List<String> componentNames = listAllComponentNames();
+        // 通过依赖查找，实例化对象（ Tomcat BeanFactory setter 方法的执行，仅支持简单类型）
+        componentNames.forEach(name -> componentsMap.put(name, lookupComponent(name)));
     }
 
     /**
@@ -139,8 +86,6 @@ public class ComponentContext {
             injectComponents(component, componentClass);
             // 初始阶段 - {@link PostConstruct}
             processPostConstruct(component, componentClass);
-            // TODO 实现销毁阶段 - {@link PreDestroy}
-            // processPreDestroy();
         });
     }
 
@@ -183,8 +128,8 @@ public class ComponentContext {
         Stream.of(componentClass.getMethods())
                 .filter(method ->
                         !Modifier.isStatic(method.getModifiers()) &&
-                                method.getParameterCount() == 0 &&
-                                method.isAnnotationPresent(PreDestroy.class))
+                        method.getParameterCount() == 0 &&
+                        method.isAnnotationPresent(PreDestroy.class))
                 .forEach(method -> {
                     try {
                         method.invoke(component);

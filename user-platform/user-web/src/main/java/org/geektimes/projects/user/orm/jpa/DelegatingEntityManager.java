@@ -1,4 +1,4 @@
-package org.geektimes.projects.user.jpa;
+package org.geektimes.projects.user.orm.jpa;
 
 import org.geektimes.context.ComponentContext;
 

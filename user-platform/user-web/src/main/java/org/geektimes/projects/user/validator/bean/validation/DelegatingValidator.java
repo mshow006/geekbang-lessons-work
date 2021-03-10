@@ -1,4 +1,4 @@
-package org.geektimes.projects.user.validation;
+package org.geektimes.projects.user.validator.bean.validation;
 
 import javax.annotation.PostConstruct;
 import javax.validation.ConstraintViolation;

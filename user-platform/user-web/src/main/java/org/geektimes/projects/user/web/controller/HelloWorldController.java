@@ -20,5 +20,4 @@ public class HelloWorldController implements PageController {
     public String execute(HttpServletRequest request, HttpServletResponse response) throws Throwable {
         return "index.jsp";
     }
-
 }

@@ -1,6 +1,6 @@
 package org.geektimes.projects.user.domain;
 
-import org.geektimes.projects.user.validation.PhoneValid;
+import org.geektimes.projects.user.validator.bean.validation.UserValid;
 
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
@@ -17,6 +17,7 @@ import static javax.persistence.GenerationType.AUTO;
  */
 @Entity
 @Table(name = "users")
+@UserValid(passwordMinLen = 6, passwordMaxLen = 32, phoneRegx = "^1(3|4|5|7|8)\\d{9}$")
 public class User implements Serializable {
 
     @Id
@@ -34,7 +35,7 @@ public class User implements Serializable {
     private String email;
 
     @Column
-    @PhoneValid
+    @Pattern(regexp = "^1[1-9]\\d{9}$", message = "电话号码格式错误")
     private String phoneNumber;
 
     public Long getId() {

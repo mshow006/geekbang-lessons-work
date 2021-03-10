@@ -104,21 +104,21 @@ public class DBConnectionManager { // JNDI Component
 //        DriverManager.setLogWriter(new PrintWriter(System.out));
 //
 //        Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
-//        Driver driver = DriverManager.getDriver("jdbc:derby://db/user-platform;create=true");
-//        Connection connection = driver.connect("jdbc:derby://db/user-platform;create=true", new Properties());
+//        Driver driver = DriverManager.getDriver("jdbc:derby:/db/user-platform;create=true");
+//        Connection connection = driver.connect("jdbc:derby:/db/user-platform;create=true", new Properties());
 
         String databaseURL = "jdbc:derby:/db/user-platform;create=true";
         Connection connection = DriverManager.getConnection(databaseURL);
 
         Statement statement = connection.createStatement();
-        // 删除 users 表
-        System.out.println(statement.execute(DROP_USERS_TABLE_DDL_SQL)); // false
         // 创建 users 表
         System.out.println(statement.execute(CREATE_USERS_TABLE_DDL_SQL)); // false
         System.out.println(statement.executeUpdate(INSERT_USER_DML_SQL));  // 5
-
         // 执行查询语句（DML）
         ResultSet resultSet = statement.executeQuery("SELECT id,name,password,email,phoneNumber FROM users");
+
+        // 删除 users 表
+        System.out.println(statement.execute(DROP_USERS_TABLE_DDL_SQL)); // false
 
         // BeanInfo
         BeanInfo userBeanInfo = Introspector.getBeanInfo(User.class, Object.class);

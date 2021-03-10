@@ -6,6 +6,6 @@
 <body>
 <div class="container-lg">
     <!-- Content here -->
-    Hello,World 2021
+    注册失败
 </div>
 </body>
