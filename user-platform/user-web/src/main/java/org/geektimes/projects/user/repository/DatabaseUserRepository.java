@@ -5,6 +5,9 @@ import org.geektimes.context.ComponentContext;
 import org.geektimes.projects.user.domain.User;
 import org.geektimes.projects.user.sql.DBConnectionManager;
 
+import javax.annotation.Resource;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
@@ -32,19 +35,28 @@ public class DatabaseUserRepository implements UserRepository {
 
     public static final String QUERY_ALL_USERS_DML_SQL = "SELECT id,name,password,email,phoneNumber FROM users";
 
-    private final DBConnectionManager dbConnectionManager;
+    @Resource(name = "bean/DBConnectionManager")
+    private DBConnectionManager dbConnectionManager;
 
     public DatabaseUserRepository() {
-        this.dbConnectionManager = ComponentContext.getInstance().getComponent("bean/DBConnectionManager");
+        // this.dbConnectionManager = ComponentContext.getInstance().getComponent("bean/DBConnectionManager");
     }
 
     private Connection getConnection() {
         return dbConnectionManager.getConnection();
     }
 
+    @Resource(name = "bean/EntityManager")
+    private EntityManager entityManager;
+
     @Override
     public boolean save(User user) {
-        return false;
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
+        user.setId(null);
+        entityManager.persist(user);
+        transaction.commit();
+        return true;
     }
 
     @Override

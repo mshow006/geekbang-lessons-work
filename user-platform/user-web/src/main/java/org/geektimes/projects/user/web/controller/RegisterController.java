@@ -9,12 +9,10 @@ import org.geektimes.projects.user.service.UserServiceImpl;
 import org.geektimes.projects.user.sql.DBConnectionManager;
 import org.geektimes.web.mvc.controller.PageController;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
+import javax.ws.rs.*;
 import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
@@ -23,10 +21,13 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Map;
 
-@Path("/register")
+// @Path("/register")
 public class RegisterController implements PageController {
 
-    private UserService userService = new UserServiceImpl();
+    // private UserService userService = new UserServiceImpl();
+
+    @Resource(name = "bean/UserServiceImpl")
+    private UserService userService;
 
     @GET
     @Path("")
@@ -34,9 +35,13 @@ public class RegisterController implements PageController {
         return "register.jsp";
     }
 
+    @GET
     @POST
-    @Path("/submit")
+    @Path("/register")
     public String register(HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        if(HttpMethod.GET.equals(request.getMethod())) {
+            return "register.jsp";
+        }
         User userModel = getModel(httpRequest -> {
             BeanInfo userBeanInfo = Introspector.getBeanInfo(User.class, Object.class);
             User user = new User();
@@ -54,14 +59,7 @@ public class RegisterController implements PageController {
             return user;
         }, request);
 
-        System.out.println(userModel);
-        boolean success = userService.register(userModel);
-
-        User user = userService.queryUserByNameAndPassword(userModel.getName(), userModel.getPassword());
-        Collection<User> users = userService.getAll();
-
-        request.setAttribute("user", user);
-        request.setAttribute("users", users);
+        userService.register(userModel);
 
         return "result.jsp";
     }
