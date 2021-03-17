@@ -1,18 +1,15 @@
 package org.geektimes.projects.user.orm.jpa;
 
+import org.apache.derby.impl.db.BasicDatabase;
 import org.apache.derby.jdbc.EmbeddedDataSource;
 import org.geektimes.projects.user.domain.User;
 
 import javax.annotation.Resource;
 import javax.persistence.*;
+import javax.persistence.spi.PersistenceProvider;
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
-
-import static org.geektimes.projects.user.sql.DBConnectionManager.CREATE_USERS_TABLE_DDL_SQL;
 
 public class JpaDemo {
 
@@ -55,20 +52,6 @@ public class JpaDemo {
         EmbeddedDataSource dataSource = new EmbeddedDataSource();
         dataSource.setDatabaseName("/db/user-platform");
         dataSource.setCreateDatabase("create");
-        Connection connection = null;
-        try {
-            connection = dataSource.getConnection();
-            PreparedStatement ps = connection.prepareStatement(CREATE_USERS_TABLE_DDL_SQL);
-            ps.execute();
-        } catch (SQLException e) {
-
-        } finally {
-            try {
-                connection.close();
-            } catch (Exception e) {
-            }
-        }
-
         return dataSource;
     }
 }
