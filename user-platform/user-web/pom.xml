@@ -84,6 +84,11 @@
             <artifactId>microprofile-config-api</artifactId>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.jolokia/jolokia-core -->
+        <dependency>
+            <groupId>org.jolokia</groupId>
+            <artifactId>jolokia-core</artifactId>
+        </dependency>
 
     </dependencies>
 

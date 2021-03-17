@@ -6,8 +6,10 @@ import org.geektimes.function.ThrowableFunction;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
+import javax.management.MBeanServer;
 import javax.naming.*;
 import javax.servlet.ServletContext;
+import java.lang.management.ManagementFactory;
 import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.logging.Logger;
@@ -23,6 +25,8 @@ public class ComponentContext {
     private static final String COMPONENT_ENV_CONTEXT_NAME = "java:comp/env";
 
     private static final Logger logger = Logger.getLogger(CONTEXT_NAME);
+
+    private MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
 
     private static ServletContext servletContext; // 请注意
     // 假设一个 Tomcat JVM 进程，三个 Web Apps，会不会相互冲突？（不会冲突）
@@ -249,5 +253,9 @@ public class ComponentContext {
         } finally {
             close(context);
         }
+    }
+
+    public MBeanServer getmBeanServer(){
+        return mBeanServer;
     }
 }
